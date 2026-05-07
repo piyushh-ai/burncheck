@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "node --test tests/**/*.test.js",
+    "test": "node --test tests/auditEngine.test.js tests/pricingValidation.test.js",
     "dev": "npx nodemon server.js"
   },
   "keywords": [],
