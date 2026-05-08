@@ -65,3 +65,12 @@ Yes. Each audit generates a unique shareable URL. Share it with your team or you
 ## Footer CTA
 **"Your AI bill is too high. Find out by how much."**
 [Audit My Spend →]
+
+
+## Day 2 (2026-05-08) Updates
+
+- Completed frontend implementation using React, Redux, and the Google Stitch MCP for a premium Financial Precision design system.
+- Upgraded backend uditEngine.js for advanced tool overlap detection and budget savings calculations.
+- Integrated Anthropic LLM (claude-haiku) for natural language AI summaries.
+- Switched to express-validator for flexible, format-only email validation.
+- Wired frontend forms and backend endpoints, including local storage draft persistence and an Admin Leads dashboard.

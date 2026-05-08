@@ -1,0 +1,52 @@
+/* src/components/layout/TopNavBar.css */
+.top-nav {
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.brand-name {
+  color: var(--text-primary);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.admin-badge {
+  background-color: var(--primary-muted);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tagline {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .tagline {
+    display: none;
+  }
+}

@@ -8,7 +8,9 @@ const leadSchema = new mongoose.Schema({
   useCase: String,
   monthlyBudget: Number,
   needsAPI: Boolean,
-  recommendedPlans: [Object], // store audit result
+  currentTools: [String], // array of tool keys user already pays for
+  recommendedPlans: [Object], // full recommendation objects from engine
+  aiSummary: String, // LLM-generated natural language summary
   createdAt: { type: Date, default: Date.now },
 });
 

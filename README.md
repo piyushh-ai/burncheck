@@ -73,3 +73,11 @@ npx vercel --prod
 
 ### 5. Monorepo (single package.json) vs Separate Frontend/Backend
 **Chose separate directories.** A monorepo with workspaces (npm/pnpm) would give shared scripts and a single `npm install`. But it adds tooling complexity (workspace config, hoisting issues). Two simple directories with their own `package.json` files are easier to reason about, deploy independently, and onboard new contributors. The backend deploys to Render, the frontend to Vercel — they don't need to know about each other at build time.
+
+## Day 2 (2026-05-08) Updates
+
+- Completed frontend implementation using React, Redux, and the Google Stitch MCP for a premium Financial Precision design system.
+- Upgraded backend uditEngine.js for advanced tool overlap detection and budget savings calculations.
+- Integrated Anthropic LLM (claude-haiku) for natural language AI summaries.
+- Switched to express-validator for flexible, format-only email validation.
+- Wired frontend forms and backend endpoints, including local storage draft persistence and an Admin Leads dashboard.

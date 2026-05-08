@@ -33,11 +33,27 @@
 ---
 
 ## Day 2 — 2026-05-08
-**Hours worked:**
+**Hours worked:** 6
+
 **What I did:**
+- Upgraded `auditEngine.js` to factor in use case matching, overlap detection (e.g. Cursor vs Copilot), and calculated budget savings.
+- Integrated the Anthropic SDK (`claude-haiku`) in `llmService.js` to generate a 2-3 paragraph natural language summary based purely on rule engine math. Added graceful fallback logic if API is down.
+- Replaced custom blocked email list with `express-validator` to allow all valid email formats to pass through the `/api/audit` endpoint.
+- Used the StitchMCP (Google Stitch) to generate a premium "Financial Precision" design system (Dark mode, Inter font, Orange accent).
+- Built out the Vite+React frontend using a strict 4-layer architecture (API calls in Axios, Redux for state, custom hooks, and React UI components).
+- Built Home, Results, and Admin pages. Implemented LocalStorage drafting and connected frontend to backend endpoints.
+
 **What I learned:**
+- Generating UI with Stitch using strict constraints (like "NO purple/cyan") worked wonderfully to keep the app looking incredibly premium and focused. 
+- Calling LLM APIs in real-time inside the main request loop means users wait longer. Setting a generous axios timeout (30s) and using a fallback if the LLM crashes ensures the core rule-engine always works and users aren't left stranded.
+
 **Blockers / what I'm stuck on:**
+- Anthropic API has zero credit balance, so the fallback rule-based summary triggers. I need to either add credits to the account or just rely on the robust fallback for the final demo.
+
 **Plan for tomorrow:**
+- Finalize the presentation (Loom recording).
+- Deploy frontend to Vercel and Backend to AWS(EC2).
+- Clean up any remaining assignment specific questions in markdown files.
 
 ---
 

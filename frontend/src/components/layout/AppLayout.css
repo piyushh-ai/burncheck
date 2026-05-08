@@ -1,0 +1,25 @@
+/* src/components/layout/AppLayout.css */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 40px 0 80px 0;
+}
+
+.app-footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 0;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.app-footer .copyright {
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.7;
+}

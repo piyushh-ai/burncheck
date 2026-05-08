@@ -68,3 +68,12 @@ I used **Claude (via Antigravity/IDE integration)** as my primary AI assistant t
 - **Problem Solving: 8/10** — Identified and solved the type coercion bug in the budget filter. Made a good architectural decision to use rules over LLM for the audit engine. Designed a flexible pricing data schema that handles three different pricing models (flat, per-seat, usage-based).
 
 - **Entrepreneurial Thinking: 7/10** — Good understanding of the target user (engineering managers at small startups). Identified the "duplicate tool detection" insight from initial research. But haven't done user interviews yet (planned for Day 3-4), and the GTM strategy needs more specific distribution channels.
+
+
+## Day 2 (2026-05-08) Updates
+
+- Completed frontend implementation using React, Redux, and the Google Stitch MCP for a premium Financial Precision design system.
+- Upgraded backend uditEngine.js for advanced tool overlap detection and budget savings calculations.
+- Integrated Anthropic LLM (claude-haiku) for natural language AI summaries.
+- Switched to express-validator for flexible, format-only email validation.
+- Wired frontend forms and backend endpoints, including local storage draft persistence and an Admin Leads dashboard.

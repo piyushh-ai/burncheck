@@ -4,19 +4,19 @@
 
 ```mermaid
 graph TD
-    A[User opens BurnCheck] --> B[React Frontend - Vite]
+    A[User opens BurnCheck] --> B[React Frontend - Vite/Redux]
     B --> C[User fills audit form]
     C --> D[localStorage saves draft]
     C --> E[POST /api/audit]
     E --> F[auditController.js]
     F --> G[auditEngine.js - Rule-based scoring]
-    G --> H[pricingData.js - Verified pricing database]
+    G --> H[pricingData.js - Pricing database]
+    F --> |Parallel Async| LLM[llmService.js - Anthropic Claude]
     G --> I[Score & rank plans]
-    I --> J[Top 5 recommendations returned]
+    I --> J[Top 5 recommendations + Summary returned]
     F --> K[Lead.js - Save to MongoDB]
     J --> L[Results displayed in frontend]
     L --> M[Shareable audit URL]
-    L --> N[Email capture for report]
 ```
 
 ## Folder Structure
@@ -45,10 +45,21 @@ burncheck/
     ├── index.html
     ├── vite.config.js
     └── src/
+        ├── api/
+        │   └── auditApi.js          # Layer 4 - Axios interceptors and endpoints
+        ├── hooks/
+        │   └── useAudit.js          # Layer 3 - Custom hooks abstracting state
+        ├── store/
+        │   ├── store.js             # Layer 2 - Redux store configuration
+        │   └── slices/              # Redux slices (auditSlice)
+        ├── components/
+        │   └── layout/              # Reusable layout UI components
+        ├── pages/                   # Layer 1 - Page level UI components
+        ├── theme/                   # Stitch Design System tokens
         ├── main.jsx                 # React entry point
-        ├── App.jsx                  # Main app component
-        ├── App.css                  # Component styles
+        ├── App.jsx                  # React Router setup
         └── index.css                # Global styles
+```
 ```
 
 ## Data Flow
@@ -71,13 +82,13 @@ Step-by-step: how a user's input becomes an audit result.
 
 ## Stack Choices — Why These Tools
 
-| Layer      | Choice           | Why                                                                 |
-|-----------|-----------------|---------------------------------------------------------------------|
-| Frontend  | React + Vite    | Fast HMR, simple SPA — no SSR needed since backend handles data    |
-| Backend   | Express.js      | Minimal, well-documented, easy to add middleware and routes         |
-| Database  | MongoDB + Mongoose | Schema-flexible for evolving pricing data structures             |
-| Deployment| Vercel (FE) + Render (BE) | Free tiers, GitHub integration, zero-config for Node apps  |
-| Styling   | Vanilla CSS     | Full control, no build-step dependency on Tailwind/utility classes  |
+| Layer      | Choice                    | Why                                                                |
+| ---------- | ------------------------- | ------------------------------------------------------------------ |
+| Frontend   | React + Vite              | Fast HMR, simple SPA — no SSR needed since backend handles data    |
+| Backend    | Express.js                | Minimal, well-documented, easy to add middleware and routes        |
+| Database   | MongoDB + Mongoose        | Schema-flexible for evolving pricing data structures               |
+| Deployment | Vercel (FE) + Render (BE) | Free tiers, GitHub integration, zero-config for Node apps          |
+| Styling    | Vanilla CSS               | Full control, no build-step dependency on Tailwind/utility classes |
 
 ## If We Had to Handle 10,000 Audits/Day
 
