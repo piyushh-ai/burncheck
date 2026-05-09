@@ -4,7 +4,10 @@ BurnCheck is a free AI spend audit tool built for startup founders, CTOs, and en
 
 Built as part of the Credex Web Dev Assignment 2026.
 
-**Live URL:** `https://burncheck.vercel.app` _(coming soon — being deployed)_
+**Live URLs**
+
+- **Frontend:** [https://burncheck.vercel.app](https://burncheck.vercel.app)
+- **Backend API:** [https://burncheck.onrender.com](https://burncheck.onrender.com)
 
 ---
 

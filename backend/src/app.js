@@ -12,7 +12,8 @@ const allowedOrigins = [
   "http://localhost:5174",
   "http://127.0.0.1:5173",
   "http://127.0.0.1:5174",
-  process.env.FRONTEND_URL, // e.g. https://burncheck.vercel.app
+  "https://burncheck.vercel.app", // live production URL
+  process.env.FRONTEND_URL, // dynamically passed from Render
 ].filter(Boolean);
 
 app.use(
