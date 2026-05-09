@@ -1,14 +1,13 @@
+// src/routes/auditRoutes.js
 import express from "express";
 import { runAudit } from "../controllers/auditController.js";
-import { getLeads } from "../controllers/adminController.js";
 import { validateWorkEmail } from "../middleware/validateEmail.js";
+import { honeypotCheck } from "../middleware/honeypot.js";
 
 const router = express.Router();
 
-// validateWorkEmail runs first — rejects personal emails before audit logic
-router.post("/audit", validateWorkEmail, runAudit);
-
-// Admin dashboard route
-router.get("/leads", getLeads);
+// POST /api/audit
+// Pipeline: honeypot check → email validation → audit logic
+router.post("/audit", honeypotCheck, validateWorkEmail, runAudit);
 
 export default router;

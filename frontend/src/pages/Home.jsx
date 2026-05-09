@@ -52,6 +52,15 @@ export default function Home() {
         )}
 
         <form onSubmit={handleSubmit} className="audit-form">
+          {/* Honeypot — hidden from humans, bots fill it → rejected server-side */}
+          <input
+            type="text"
+            name="_hp"
+            style={{ display: "none" }}
+            tabIndex="-1"
+            autoComplete="off"
+            aria-hidden="true"
+          />
           <div className="form-grid">
             {/* Column 1 */}
             <div className="form-col">

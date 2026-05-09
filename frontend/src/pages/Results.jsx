@@ -4,37 +4,126 @@ import { useNavigate } from "react-router-dom";
 import { useAudit } from "../hooks/useAudit";
 import "./Results.css";
 
+// Encode audit result into a real shareable base64 URL
+function buildShareableURL(form, recommendations) {
+  try {
+    const payload = {
+      t: form.teamSize,
+      u: form.useCase,
+      b: form.monthlyBudget,
+      recs: recommendations.slice(0, 3).map((r) => ({
+        tool: r.tool,
+        plan: r.plan,
+        cost: r.monthlyCost,
+        savings: r.savingsVsBudget,
+      })),
+    };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+    return `${window.location.origin}/results?share=${encoded}`;
+  } catch {
+    return window.location.href;
+  }
+}
+
 export default function Results() {
   const navigate = useNavigate();
   const { form, recommendations, summary, status } = useAudit();
   const [copied, setCopied] = useState(false);
 
-  // Redirect if no results (e.g. user refreshed the page)
   useEffect(() => {
     if (status !== "succeeded" || recommendations.length === 0) {
       navigate("/");
     }
   }, [status, recommendations, navigate]);
 
+  if (status !== "succeeded") return null;
+
+  // Compute total monthly savings across all recs vs budget
+  const totalMonthlySavings = recommendations.reduce(
+    (sum, r) => sum + Math.max(0, r.savingsVsBudget || 0),
+    0
+  );
+  const totalAnnualSavings = totalMonthlySavings * 12;
+  const showCredexCTA = totalMonthlySavings >= 500;
+  const alreadyOptimal = totalMonthlySavings === 0 && recommendations.length > 0;
+
+  const shareableURL = buildShareableURL(form, recommendations);
+
   const handleCopyLink = () => {
-    // In a real app, this would be a unique UUID route.
-    // For this assignment, we just fake the copy interaction.
-    navigator.clipboard.writeText(window.location.href);
+    navigator.clipboard.writeText(shareableURL);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  if (status !== "succeeded") return null; // Avoid flicker before redirect
-
   return (
     <div className="container results-page">
       <header className="results-header">
-        <h1>Your Audit Results</h1>
+        <h1>Your AI Spend Audit</h1>
         <p className="meta">
-          Audit ran for {form.email} &bull; {form.teamSize}-person {form.useCase} team &bull; ${form.monthlyBudget}/mo budget
+          {form.email} &bull; {form.teamSize}-person {form.useCase} team &bull; ${form.monthlyBudget}/mo budget
         </p>
       </header>
 
+      {/* Hero — Total Savings */}
+      {totalMonthlySavings > 0 && (
+        <section className="savings-hero">
+          <div className="card savings-hero-card">
+            <div className="savings-numbers">
+              <div className="savings-block">
+                <span className="savings-label">Monthly Savings</span>
+                <span className="savings-amount">${Math.round(totalMonthlySavings)}</span>
+                <span className="savings-period">/mo</span>
+              </div>
+              <div className="savings-divider" />
+              <div className="savings-block">
+                <span className="savings-label">Annual Savings</span>
+                <span className="savings-amount">${Math.round(totalAnnualSavings).toLocaleString()}</span>
+                <span className="savings-period">/yr</span>
+              </div>
+            </div>
+            <p className="savings-tagline">Potential savings by switching to recommended plans</p>
+          </div>
+        </section>
+      )}
+
+      {alreadyOptimal && (
+        <section className="optimal-banner">
+          <div className="card optimal-card">
+            <span className="optimal-icon">✓</span>
+            <div>
+              <h3>You're spending well</h3>
+              <p>Your current setup is already near-optimal for your team and use case. Sign up below to be notified when new optimizations apply to your stack.</p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Credex CTA — only shown for >$500/mo savings */}
+      {showCredexCTA && (
+        <section className="credex-cta-section">
+          <div className="card credex-cta-card">
+            <div className="credex-cta-content">
+              <div className="credex-badge">Powered by Credex</div>
+              <h2 className="credex-cta-title">
+                You could save ${Math.round(totalMonthlySavings)}/mo — let Credex capture even more
+              </h2>
+              <p className="credex-cta-desc">
+                Credex bulk-purchases AI API credits at negotiated rates and passes the savings directly to your team. At your spending level, companies typically save an additional 20–40% on top of plan optimization.
+              </p>
+              <a
+                href="https://credex.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="credex-cta-btn"
+              >
+                Book a Free Credex Consultation →
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* AI Summary */}
       {summary && (
         <section className="summary-section">
           <div className="card summary-card">
@@ -52,6 +141,7 @@ export default function Results() {
         </section>
       )}
 
+      {/* Top Recommendations */}
       <section className="recommendations-section">
         <h2 className="section-title">Top Recommendations</h2>
         <div className="rec-grid">
@@ -69,11 +159,11 @@ export default function Results() {
                 <div className="price">${rec.monthlyCost}<span>/mo</span></div>
                 {rec.savingsVsBudget > 0 ? (
                   <div className="savings-badge">
-                    Saves ${rec.savingsVsBudget}/mo vs budget
+                    Saves ${Math.round(rec.savingsVsBudget)}/mo vs budget
                   </div>
                 ) : rec.savingsVsBudget < 0 ? (
                   <div className="over-budget-badge">
-                    ${Math.abs(rec.savingsVsBudget)}/mo over budget
+                    ${Math.abs(Math.round(rec.savingsVsBudget))}/mo over budget
                   </div>
                 ) : (
                   <div className="neutral-badge">Exact budget match</div>
@@ -87,7 +177,7 @@ export default function Results() {
                     <line x1="12" y1="9" x2="12" y2="13"></line>
                     <line x1="12" y1="17" x2="12.01" y2="17"></line>
                   </svg>
-                  <span>Warning: Overlaps with {rec.overlapsWith.join(", ")}</span>
+                  <span>Overlaps with {rec.overlapsWith.join(", ")}</span>
                 </div>
               )}
 
@@ -101,7 +191,7 @@ export default function Results() {
               </div>
 
               <div className="rec-actions">
-                <a href={rec.url} target="_blank" rel="noopener noreferrer" className="view-btn">
+                <a href={rec.website} target="_blank" rel="noopener noreferrer" className="view-btn">
                   View Plan →
                 </a>
               </div>
@@ -110,18 +200,25 @@ export default function Results() {
         </div>
       </section>
 
+      {/* Share Section */}
       <section className="share-section">
         <div className="card share-card">
           <h3>Share Your Results</h3>
-          <p>Send this report to your CFO or engineering leadership.</p>
+          <p>Send this report to your CFO or engineering leadership — no login required to view.</p>
           <div className="share-row">
-            <input type="text" readOnly value="https://burncheck.app/audit/draft-1234" />
+            <input type="text" readOnly value={shareableURL} />
             <button onClick={handleCopyLink} className="primary">
-              {copied ? "Copied!" : "Copy Link"}
+              {copied ? "✓ Copied!" : "Copy Link"}
             </button>
           </div>
         </div>
       </section>
+
+      <div className="results-footer">
+        <button onClick={() => navigate("/")} className="secondary-btn">
+          ← Run Another Audit
+        </button>
+      </div>
     </div>
   );
 }

@@ -29,14 +29,13 @@
 }
 
 .admin-badge {
-  background-color: var(--primary-muted);
-  color: var(--primary);
-  font-size: 12px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  display: none; /* removed */
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .tagline {
@@ -45,8 +44,25 @@
   font-weight: 500;
 }
 
+.nav-credex-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+
+.nav-credex-link:hover {
+  opacity: 1;
+  text-decoration: none;
+}
+
 @media (max-width: 600px) {
   .tagline {
     display: none;
+  }
+  .nav-credex-link {
+    font-size: 12px;
   }
 }
