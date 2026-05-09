@@ -1,5 +1,5 @@
 // src/pages/Admin.jsx
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { fetchLeads } from "../api/auditApi";
 import "./Admin.css";
 

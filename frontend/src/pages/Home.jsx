@@ -24,6 +24,7 @@ export default function Home() {
       navigate("/results");
     } catch (err) {
       // Error is handled in Redux state and displayed below
+      console.error("Audit submission failed:", err);
     }
   };
 

@@ -1,5 +1,5 @@
 // src/pages/Results.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAudit } from "../hooks/useAudit";
 import "./Results.css";
@@ -36,17 +36,17 @@ export default function Results() {
   const { form: reduxForm, recommendations: reduxRecs, summary: reduxSummary, status } = useAudit();
   
   const [copied, setCopied] = useState(false);
-  const [sharedData, setSharedData] = useState(null);
-  const [error, setError] = useState(false);
 
   const isShared = searchParams.has("share");
 
-  useEffect(() => {
-    if (isShared) {
-      try {
-        const encoded = searchParams.get("share");
-        const decoded = JSON.parse(decodeURIComponent(escape(atob(encoded))));
-        setSharedData({
+  const { sharedData, error } = useMemo(() => {
+    if (!isShared) return { sharedData: null, error: false };
+    try {
+      const encoded = searchParams.get("share");
+      const decoded = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+      return {
+        error: false,
+        sharedData: {
           form: {
             teamSize: decoded.t,
             useCase: decoded.u,
@@ -63,17 +63,19 @@ export default function Results() {
             website: r.website || "#",
           })),
           summary: decoded.summary || "This is a shared read-only view of a BurnCheck audit.",
-        });
-      } catch (err) {
-        console.error("Failed to parse shared URL", err);
-        setError(true);
-      }
-    } else {
-      if (status !== "succeeded" || reduxRecs.length === 0) {
-        navigate("/");
-      }
+        }
+      };
+    } catch (err) {
+      console.error("Failed to parse shared URL", err);
+      return { sharedData: null, error: true };
     }
-  }, [isShared, searchParams, status, reduxRecs, navigate]);
+  }, [isShared, searchParams]);
+
+  useEffect(() => {
+    if (!isShared && (status !== "succeeded" || reduxRecs.length === 0)) {
+      navigate("/");
+    }
+  }, [isShared, status, reduxRecs, navigate]);
 
   if (error) {
     return (
@@ -90,7 +92,6 @@ export default function Results() {
   }
 
   // Wait for either shared data to parse, or redux to be ready
-  if (isShared && !sharedData) return <div className="container"><p>Loading shared audit...</p></div>;
   if (!isShared && status !== "succeeded") return null;
 
   const form = isShared ? sharedData.form : reduxForm;
