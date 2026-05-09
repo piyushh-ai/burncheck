@@ -1,6 +1,6 @@
 // src/pages/Results.jsx
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAudit } from "../hooks/useAudit";
 import "./Results.css";
 
@@ -11,12 +11,17 @@ function buildShareableURL(form, recommendations) {
       t: form.teamSize,
       u: form.useCase,
       b: form.monthlyBudget,
+      email: form.email,
       recs: recommendations.slice(0, 3).map((r) => ({
         tool: r.tool,
         plan: r.plan,
         cost: r.monthlyCost,
         savings: r.savingsVsBudget,
+        overlapsWith: r.overlapsWith || [],
+        reasons: r.reasons || ["Recommended based on your team size and use case."],
+        website: r.website || "#",
       })),
+      summary: "This is a shared read-only view of a BurnCheck audit.",
     };
     const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
     return `${window.location.origin}/results?share=${encoded}`;
@@ -27,16 +32,70 @@ function buildShareableURL(form, recommendations) {
 
 export default function Results() {
   const navigate = useNavigate();
-  const { form, recommendations, summary, status } = useAudit();
+  const [searchParams] = useSearchParams();
+  const { form: reduxForm, recommendations: reduxRecs, summary: reduxSummary, status } = useAudit();
+  
   const [copied, setCopied] = useState(false);
+  const [sharedData, setSharedData] = useState(null);
+  const [error, setError] = useState(false);
+
+  const isShared = searchParams.has("share");
 
   useEffect(() => {
-    if (status !== "succeeded" || recommendations.length === 0) {
-      navigate("/");
+    if (isShared) {
+      try {
+        const encoded = searchParams.get("share");
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+        setSharedData({
+          form: {
+            teamSize: decoded.t,
+            useCase: decoded.u,
+            monthlyBudget: decoded.b,
+            email: decoded.email || "Shared User",
+          },
+          recommendations: decoded.recs.map(r => ({
+            tool: r.tool,
+            plan: r.plan,
+            monthlyCost: r.cost,
+            savingsVsBudget: r.savings,
+            overlapsWith: r.overlapsWith || [],
+            reasons: r.reasons || ["Recommended based on your team size and use case."],
+            website: r.website || "#",
+          })),
+          summary: decoded.summary || "This is a shared read-only view of a BurnCheck audit.",
+        });
+      } catch (err) {
+        console.error("Failed to parse shared URL", err);
+        setError(true);
+      }
+    } else {
+      if (status !== "succeeded" || reduxRecs.length === 0) {
+        navigate("/");
+      }
     }
-  }, [status, recommendations, navigate]);
+  }, [isShared, searchParams, status, reduxRecs, navigate]);
 
-  if (status !== "succeeded") return null;
+  if (error) {
+    return (
+      <div className="container results-page">
+        <header className="results-header">
+          <h1>Invalid Share Link</h1>
+          <p>This audit link appears to be broken or malformed.</p>
+          <button onClick={() => navigate("/")} className="primary" style={{marginTop: '20px'}}>
+            Run New Audit
+          </button>
+        </header>
+      </div>
+    );
+  }
+
+  // Wait for either shared data to parse, or redux to be ready
+  if (isShared && !sharedData) return <div className="container"><p>Loading shared audit...</p></div>;
+  if (!isShared && status !== "succeeded") return null;
+
+  const form = isShared ? sharedData.form : reduxForm;
+  const recommendations = isShared ? sharedData.recommendations : reduxRecs;
+  const summary = isShared ? sharedData.summary : reduxSummary;
 
   // Compute total monthly savings across all recs vs budget
   const totalMonthlySavings = recommendations.reduce(
