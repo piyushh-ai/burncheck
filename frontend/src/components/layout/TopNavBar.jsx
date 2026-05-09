@@ -18,7 +18,7 @@ export default function TopNavBar() {
         <div className="nav-right">
           <span className="tagline">Stop overpaying for AI tools</span>
           <a
-            href="https://credex.ai"
+            href="https://credex.rocks"
             target="_blank"
             rel="noopener noreferrer"
             className="nav-credex-link"

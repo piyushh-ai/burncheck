@@ -4,10 +4,16 @@ BurnCheck is a free AI spend audit tool built for startup founders, CTOs, and en
 
 Built as part of the Credex Web Dev Assignment 2026.
 
+**Live URL:** `https://burncheck.vercel.app` _(coming soon — being deployed)_
+
+---
+
 ## Screenshots
 
-> Screenshots and a short Loom walkthrough will be added once the frontend is fully wired up.
+> Screenshots and a Loom walkthrough will be added after deployment.
 > TODO: Add 3+ screenshots of the audit form, results page, and shareable report.
+
+---
 
 ## Quick Start
 
@@ -19,43 +25,59 @@ Built as part of the Credex Web Dev Assignment 2026.
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/burncheck.git
+git clone https://github.com/piyushh-ai/burncheck.git
 cd burncheck
 
 # Backend
 cd backend
 npm install
-cp .env.example .env   # Add your MONGO_URI and PORT
-npm run dev
+cp .env.example .env   # Fill in MONGO_URI, ANTHROPIC_API_KEY, RESEND_API_KEY
+npm run dev            # Starts at http://localhost:3000
 
 # Frontend (new terminal)
 cd frontend
 npm install
-npm run dev
+npm run dev            # Starts at http://localhost:5173
 ```
 
 ### Environment Variables (Backend)
 
-| Variable   | Description                  | Example                         |
-|-----------|------------------------------|---------------------------------|
-| `PORT`    | Server port                  | `3000`                          |
-| `MONGO_URI` | MongoDB connection string  | `mongodb://localhost:27017/burncheck` |
+| Variable | Required | Description | Example |
+|----------|----------|-------------|---------|
+| `PORT` | Yes | Server port | `3000` |
+| `MONGO_URI` | Yes | MongoDB connection string | `mongodb+srv://...` |
+| `ANTHROPIC_API_KEY` | Yes | Claude API key for AI summaries | `sk-ant-...` |
+| `RESEND_API_KEY` | No | Resend key for transactional emails | `re_...` |
+| `FRONTEND_URL` | No | Production frontend URL for CORS | `https://burncheck.vercel.app` |
+| `NODE_ENV` | No | Environment (`development` / `production`) | `development` |
 
 ### Deploy
 
 ```bash
-# Frontend — Vercel
+# Frontend → Vercel
 cd frontend
 npx vercel --prod
 
-# Backend — Render / Railway
-# Push to GitHub → connect repo → set env vars → deploy
+# Backend → Render
+# 1. Push to GitHub
+# 2. Create new Web Service on render.com
+# 3. Set root dir: backend/
+# 4. Build: npm install | Start: node server.js
+# 5. Add environment variables (MONGO_URI, ANTHROPIC_API_KEY, FRONTEND_URL, PORT)
 ```
 
-## Live URL
+---
 
-> Will be updated once deployed.  
-> `https://burncheck.vercel.app` (placeholder)
+## How It Works
+
+1. **Audit Form** — Enter your team size, use case, monthly AI budget, current tools, and whether you need API access. Form state persists across page reloads.
+2. **Audit Engine** — Deterministic rule-based engine scores and ranks every plan across 7 tools. Budget filter, per-seat math, overlap detection, use-case fit.
+3. **AI Summary** — Claude (Anthropic) generates a 80–100 word personalized summary. Falls back to a rule-based template if API is unavailable.
+4. **Results** — Total savings hero (monthly + annual), per-tool breakdown with "View Plan" links, Credex consultation CTA for >$500/mo savings.
+5. **Share** — Real shareable URL via base64-encoded result. No login, no PII in URL.
+6. **Email** — Transactional confirmation email via Resend with full audit summary.
+
+---
 
 ## Decisions (5 Trade-offs)
 
@@ -68,16 +90,8 @@ npx vercel --prod
 ### 3. Hardcoded Rule Engine vs LLM-based Audit
 **Chose hardcoded rules.** The scoring logic in `auditEngine.js` uses deterministic rules (team size thresholds, budget filters, per-seat math). An LLM could generate more nuanced recommendations, but the pricing math needs to be *exactly right* — a hallucinated number destroys credibility. Rules are testable, predictable, and debuggable. The LLM is used only for generating a natural-language summary on top of the rule-based results, where small inaccuracies are acceptable.
 
-### 4. localStorage vs Backend for Form State
-**Chose localStorage.** The audit form has multiple fields (team size, use case, budget, tools). If the user refreshes mid-form, losing all input is frustrating. Saving drafts to the backend would require auth or session management — too heavy for a free anonymous tool. localStorage persists the form state with zero backend complexity. The trade-off is that data doesn't sync across devices, but for a quick audit tool that's fine.
+### 4. Rate Limit + Honeypot vs hCaptcha
+**Chose rate limiting + honeypot.** CAPTCHA adds friction to the audit flow — for a free tool with no auth, making someone solve a puzzle before seeing their results kills conversion. The honeypot (hidden field bots fill, humans don't) catches naive bots silently. The rate limiter (10 requests/15min per IP) handles more sophisticated abuse. Two-layer protection with zero user friction.
 
-### 5. Monorepo (single package.json) vs Separate Frontend/Backend
-**Chose separate directories.** A monorepo with workspaces (npm/pnpm) would give shared scripts and a single `npm install`. But it adds tooling complexity (workspace config, hoisting issues). Two simple directories with their own `package.json` files are easier to reason about, deploy independently, and onboard new contributors. The backend deploys to Render, the frontend to Vercel — they don't need to know about each other at build time.
-
-## Day 2 (2026-05-08) Updates
-
-- Completed frontend implementation using React, Redux, and the Google Stitch MCP for a premium Financial Precision design system.
-- Upgraded backend uditEngine.js for advanced tool overlap detection and budget savings calculations.
-- Integrated Anthropic LLM (claude-haiku) for natural language AI summaries.
-- Switched to express-validator for flexible, format-only email validation.
-- Wired frontend forms and backend endpoints, including local storage draft persistence and an Admin Leads dashboard.
+### 5. Base64 Shareable URL vs Server-side Audit IDs
+**Chose base64 URL encoding.** A server-side audit ID (`/audit/:id`) requires the backend to serve the result — adding a dependency and a potential failure point. Base64-encoding the result into the URL query param (`/results?share=...`) works entirely client-side, no backend required to view a shared report. Trade-off: ugly URLs and a size limit (~2KB). For this use case, that's acceptable.

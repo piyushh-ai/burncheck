@@ -111,7 +111,7 @@ export default function Results() {
                 Credex bulk-purchases AI API credits at negotiated rates and passes the savings directly to your team. At your spending level, companies typically save an additional 20–40% on top of plan optimization.
               </p>
               <a
-                href="https://credex.ai"
+                href="https://credex.rocks/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="credex-cta-btn"
