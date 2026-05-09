@@ -47,7 +47,10 @@ npm run dev            # Starts at http://localhost:5173
 | `PORT` | Yes | Server port | `3000` |
 | `MONGO_URI` | Yes | MongoDB connection string | `mongodb+srv://...` |
 | `ANTHROPIC_API_KEY` | Yes | Claude API key for AI summaries | `sk-ant-...` |
-| `RESEND_API_KEY` | No | Resend key for transactional emails | `re_...` |
+| `SMTP_HOST` | No | Brevo SMTP Host | `smtp-relay.brevo.com` |
+| `SMTP_PORT` | No | Brevo SMTP Port | `587` |
+| `SMTP_USER` | No | Brevo SMTP Username | `user@example.com` |
+| `SMTP_PASS` | No | Brevo SMTP Password | `password` |
 | `FRONTEND_URL` | No | Production frontend URL for CORS | `https://burncheck.vercel.app` |
 | `NODE_ENV` | No | Environment (`development` / `production`) | `development` |
 
