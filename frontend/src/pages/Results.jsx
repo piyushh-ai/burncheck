@@ -2,6 +2,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAudit } from "../hooks/useAudit";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import "./Results.css";
 
 // Encode audit result into a real shareable base64 URL
@@ -36,6 +38,7 @@ export default function Results() {
   const { form: reduxForm, recommendations: reduxRecs, summary: reduxSummary, status } = useAudit();
   
   const [copied, setCopied] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const isShared = searchParams.has("share");
 
@@ -97,6 +100,35 @@ export default function Results() {
   const form = isShared ? sharedData.form : reduxForm;
   const recommendations = isShared ? sharedData.recommendations : reduxRecs;
   const summary = isShared ? sharedData.summary : reduxSummary;
+
+  const exportToPDF = async () => {
+    setIsExporting(true);
+    try {
+      const element = document.querySelector(".results-page");
+      const canvas = await html2canvas(element, {
+        scale: 2, // higher quality
+        useCORS: true,
+        backgroundColor: "#0D1117", // matches dark theme background
+      });
+      
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+      });
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`BurnCheck-Audit-${form?.email || "Report"}.pdf`);
+    } catch (err) {
+      console.error("Failed to generate PDF", err);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   // Compute total monthly savings across all recs vs budget
   const totalMonthlySavings = recommendations.reduce(
@@ -261,20 +293,23 @@ export default function Results() {
       </section>
 
       {/* Share Section */}
-      <section className="share-section">
+      <section className="share-section" data-html2canvas-ignore="true">
         <div className="card share-card">
-          <h3>Share Your Results</h3>
-          <p>Send this report to your CFO or engineering leadership — no login required to view.</p>
+          <h3>Share or Export Your Results</h3>
+          <p>Send this report to your CFO or engineering leadership, or download a PDF copy.</p>
           <div className="share-row">
             <input type="text" readOnly value={shareableURL} />
             <button onClick={handleCopyLink} className="primary">
               {copied ? "✓ Copied!" : "Copy Link"}
             </button>
+            <button onClick={exportToPDF} className="secondary-btn" disabled={isExporting}>
+              {isExporting ? "Exporting..." : "Download PDF"}
+            </button>
           </div>
         </div>
       </section>
 
-      <div className="results-footer">
+      <div className="results-footer" data-html2canvas-ignore="true">
         <button onClick={() => navigate("/")} className="secondary-btn">
           ← Run Another Audit
         </button>
