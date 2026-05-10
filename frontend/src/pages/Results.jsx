@@ -109,17 +109,23 @@ export default function Results() {
         scale: 2, // higher quality
         useCORS: true,
         backgroundColor: "#0D1117", // matches dark theme background
+        windowWidth: document.documentElement.scrollWidth,
+        windowHeight: document.documentElement.scrollHeight,
       });
       
       const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4"
-      });
       
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      // Convert canvas dimensions to mm (1 px ≈ 0.264583 mm)
+      const pxToMm = 0.264583;
+      const pdfWidth = canvas.width * pxToMm;
+      const pdfHeight = canvas.height * pxToMm;
+
+      // Create a custom size PDF that exactly matches the canvas, preventing any truncation or awkward page breaks
+      const pdf = new jsPDF({
+        orientation: pdfWidth > pdfHeight ? "landscape" : "portrait",
+        unit: "mm",
+        format: [pdfWidth, pdfHeight]
+      });
       
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`BurnCheck-Audit-${form?.email || "Report"}.pdf`);
