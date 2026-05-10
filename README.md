@@ -34,7 +34,7 @@ cd burncheck
 # Backend
 cd backend
 npm install
-cp .env.example .env   # Fill in MONGO_URI, ANTHROPIC_API_KEY, RESEND_API_KEY
+cp .env.example .env   # Fill in MONGO_URI, MISTRAL_API_KEY
 npm run dev            # Starts at http://localhost:3000
 
 # Frontend (new terminal)
@@ -49,11 +49,11 @@ npm run dev            # Starts at http://localhost:5173
 |----------|----------|-------------|---------|
 | `PORT` | Yes | Server port | `3000` |
 | `MONGO_URI` | Yes | MongoDB connection string | `mongodb+srv://...` |
-| `ANTHROPIC_API_KEY` | Yes | Claude API key for AI summaries | `sk-ant-...` |
-| `SMTP_HOST` | No | Brevo SMTP Host | `smtp-relay.brevo.com` |
-| `SMTP_PORT` | No | Brevo SMTP Port | `587` |
-| `SMTP_USER` | No | Brevo SMTP Username | `user@example.com` |
-| `SMTP_PASS` | No | Brevo SMTP Password | `password` |
+| `MISTRAL_API_KEY` | Yes | Mistral API key for AI summaries | `Your_Key` |
+| `SMTP_HOST` | No | Gmail SMTP Host | `smtp.gmail.com` |
+| `SMTP_PORT` | No | Gmail SMTP Port | `465` |
+| `SMTP_USER` | No | Gmail Email Address | `user@gmail.com` |
+| `SMTP_PASS` | No | Gmail App Password | `password` |
 | `FRONTEND_URL` | No | Production frontend URL for CORS | `https://burncheck.vercel.app` |
 | `NODE_ENV` | No | Environment (`development` / `production`) | `development` |
 
@@ -69,7 +69,7 @@ npx vercel --prod
 # 2. Create new Web Service on render.com
 # 3. Set root dir: backend/
 # 4. Build: npm install | Start: node server.js
-# 5. Add environment variables (MONGO_URI, ANTHROPIC_API_KEY, FRONTEND_URL, PORT)
+# 5. Add environment variables (MONGO_URI, MISTRAL_API_KEY, FRONTEND_URL, PORT)
 ```
 
 ---
@@ -78,10 +78,10 @@ npx vercel --prod
 
 1. **Audit Form** — Enter your team size, use case, monthly AI budget, current tools, and whether you need API access. Form state persists across page reloads.
 2. **Audit Engine** — Deterministic rule-based engine scores and ranks every plan across 7 tools. Budget filter, per-seat math, overlap detection, use-case fit.
-3. **AI Summary** — Claude (Anthropic) generates a 80–100 word personalized summary. Falls back to a rule-based template if API is unavailable.
+3. **AI Summary** — Mistral AI generates a 80–100 word personalized summary. Falls back to a rule-based template if API is unavailable.
 4. **Results** — Total savings hero (monthly + annual), per-tool breakdown with "View Plan" links, Credex consultation CTA for >$500/mo savings.
 5. **Share** — Real shareable URL via base64-encoded result. No login, no PII in URL.
-6. **Email** — Transactional confirmation email via Resend with full audit summary.
+6. **Email** — Transactional confirmation email via Gmail SMTP with full audit summary.
 
 ---
 

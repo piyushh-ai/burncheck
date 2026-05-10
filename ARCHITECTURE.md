@@ -48,8 +48,8 @@ burncheck/
 │       │   └── auditRoutes.js       # POST /api/audit (honeypot → email → audit)
 │       └── services/
 │           ├── auditEngine.js       # Core logic — scoring algorithm, overlap detection
-│           ├── llmService.js        # Anthropic Claude summary generation + fallback
-│           └── emailService.js      # Resend transactional email — audit confirmation
+│           ├── llmService.js        # Mistral AI summary generation + fallback
+│           └── emailService.js      # Gmail SMTP transactional email — audit confirmation
 │
 └── frontend/
     ├── index.html                   # SEO meta + Open Graph + Twitter Card tags

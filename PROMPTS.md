@@ -1,4 +1,4 @@
-﻿# LLM Prompts
+# LLM Prompts
 
 ## Audit Summary Prompt
 
@@ -32,7 +32,7 @@ Rules:
 - **"Cost optimization advisor" persona** sets a professional, specific tone. Earlier versions used "financial advisor" which made the output too formal and generic.
 - **80-100 word limit** forces the LLM to be concise. Users don't read paragraphs — they want a quick verdict.
 - **Explicit "Rules" section** prevents common LLM failure modes: vague language ("significant savings"), missing numbers, third-person tone, and hallucinated prices.
-- **"Do NOT invent pricing numbers"** is critical. Without this guardrail, Claude occasionally generates plausible-looking but incorrect prices, especially for newer plans it wasn't trained on.
+- **"Do NOT invent pricing numbers"** is critical. Without this guardrail, Mistral occasionally generates plausible-looking but incorrect prices, especially for newer plans it wasn't trained on.
 
 ### What I Tried That Didn't Work
 
@@ -53,11 +53,11 @@ Output was 300+ words. Users closed the tab before finishing reading. Nobody rea
 ```
 Based on your knowledge of AI tool pricing, recommend the best plan...
 ```
-This made Claude use its training data for prices instead of the provided values. It recommended "GitHub Copilot Individual at $10/month" — a plan name that no longer exists (it's now "Pro"). Caught this during testing.
+This made Mistral use its training data for prices instead of the provided values. It recommended "GitHub Copilot Individual at $10/month" — a plan name that no longer exists (it's now "Pro"). Caught this during testing.
 
 ### Fallback Template (when API fails or is unavailable)
 
-Used when the Anthropic API returns an error, times out, or when API credits are exhausted:
+Used when the Mistral API returns an error, times out, or when API credits are exhausted:
 
 ```
 Based on your current AI tool setup, your team of {teamSize} could save 

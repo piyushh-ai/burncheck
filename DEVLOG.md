@@ -99,12 +99,29 @@
 ---
 
 ## Day 4 — 2026-05-10
-**Hours worked:**
-**What I did:**
-**What I learned:**
-**Blockers / what I'm stuck on:**
-**Plan for tomorrow:**
+**Hours worked:** 4
 
+**What I did:**
+- Migrated the LLM integration from Anthropic Claude to Mistral AI (`@mistralai/mistralai`) for cost-efficient, high-quality audit summaries.
+- Replaced Resend with Brevo SMTP, and eventually switched to Gmail SMTP (port 465) to bypass Render's strict free-tier outbound port blocking (ports 587 and 25).
+- Fixed a proxy rate-limiting issue (`ERR_ERL_UNEXPECTED_X_FORWARDED_FOR`) on Render by explicitly configuring `app.set('trust proxy', 1)` in Express so it correctly identifies client IPs behind Render's reverse proxy.
+- Added frontend and backend validations to reject free email providers (e.g. gmail.com, yahoo.com) to strictly capture B2B Work Emails.
+- Added a success banner on the Results page indicating that the report has been successfully emailed to the user, strictly aligning the UI with the original assignment PDF requirements.
+- Cleaned up the project structure by permanently removing all redundant Admin dashboard files.
+- Verified live deployment: Frontend successfully running on Vercel, Backend running on Render.
+
+**What I learned:**
+- Render's free tier entirely blocks outbound traffic on standard SMTP ports (25, 465, 587) to prevent spam. This completely broke Brevo SMTP. The most reliable workaround for free assignments is either using an HTTP REST API or falling back to Gmail SMTP over port 465 (which works seamlessly once the secure flag is dynamically set).
+- When deploying an Express app behind a reverse proxy (like Render or Vercel), rate limiters will fail because they see the proxy's IP instead of the user's IP. Enabling `trust proxy` is absolutely essential.
+- Mistral's Node SDK works perfectly as a drop-in replacement for Anthropic. The named import structure is slightly different (`import { Mistral }`), but the core text generation logic mapped over cleanly.
+
+**Blockers / what I'm stuck on:**
+- No major blockers. The app is fully deployed, and emails are firing correctly in production.
+
+**Plan for tomorrow:**
+- Finalize submission materials.
+- Record the required Loom walkthrough demonstrating the end-to-end flow.
+- Submit the GitHub repository and Loom link.
 ---
 
 ## Day 5 — 2026-05-11

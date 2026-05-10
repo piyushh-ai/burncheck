@@ -21,7 +21,7 @@ A second bug found on Day 3: `Results.jsx` was using `rec.url` to build the "Vie
 
 ## Q2: Decision I Reversed
 
-Initially I planned to use a single LLM call (Anthropic API) to do the entire audit — pass the user's input as a prompt and let Claude figure out the best plan recommendations. The appeal was obvious: less code to write, more nuanced recommendations, and it would handle edge cases I hadn't thought of.
+Initially I planned to use a single LLM call (Mistral API) to do the entire audit — pass the user's input as a prompt and let Mistral figure out the best plan recommendations. The appeal was obvious: less code to write, more nuanced recommendations, and it would handle edge cases I hadn't thought of.
 
 By mid-Day 1, I reversed this and went with a pure rule-based engine instead. Three reasons:
 
@@ -51,16 +51,16 @@ If I had another week, the most impactful feature would be **"Stack Comparison M
 
 ## Q4: AI Tools Usage
 
-I used **Claude (via Antigravity/IDE integration)** as my primary AI assistant throughout the project.
+I used **Mistral (via Antigravity/IDE integration)** as my primary AI assistant throughout the project.
 
 **What I used it for:**
-- Generating the initial structure of `pricingData.js` — I described the schema I wanted and had Claude scaffold it with placeholder values. I then went to each official pricing page and replaced every number manually.
+- Generating the initial structure of `pricingData.js` — I described the schema I wanted and had Mistral scaffold it with placeholder values. I then went to each official pricing page and replaced every number manually.
 - Writing boilerplate code — Express route/controller/model setup follows a pattern I've done dozens of times. AI saved ~20 minutes of typing but I reviewed every line.
 - Drafting the documentation files — GTM strategy, economics calculations, landing copy. AI gave me a solid starting structure that I rewrote with my actual thoughts and numbers.
 - Building the `emailService.js` HTML template — writing inline-CSS HTML email is tedious. Had Claude generate a starting template, then customized the design and added the Credex CTA logic.
 
 **What I did NOT trust AI for:**
-- **Pricing numbers.** Every single price in `pricingData.js` was verified by me on the official website. Claude's training data is months old — pricing changes frequently.
+- **Pricing numbers.** Every single price in `pricingData.js` was verified by me on the official website. Mistral's training data is months old — pricing changes frequently.
 - **Scoring logic.** The `scorePlan()` function needed to reflect my specific understanding of what makes a plan good for a given team. AI-generated scoring weights would be arbitrary.
 - **User interview content.** The interviews in USER_INTERVIEWS.md are from actual conversations. AI can't fabricate those.
 - **Security decisions.** Chose rate limiting + honeypot over CAPTCHA based on my own judgment about the UX trade-off. AI would have suggested CAPTCHA — the obvious answer.
