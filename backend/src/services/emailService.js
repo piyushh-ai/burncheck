@@ -63,12 +63,13 @@ export async function sendAuditEmail(userInput, recommendations, summary) {
     summary,
   });
 
+  const senderEmail = process.env.SMTP_USER || "noreply@burncheck.app";
   const mailOptions = {
-    from: '"BurnCheck" <noreply@burncheck.app>', // Sender address
-    to: email, // List of receivers
-    subject: subject, // Subject line
-    html: htmlContent, // HTML body
-    replyTo: "hello@burncheck.app",
+    from: `"BurnCheck" <${senderEmail}>`, // Use verified Brevo SMTP user
+    to: email,
+    subject: subject,
+    html: htmlContent,
+    replyTo: senderEmail,
   };
 
   try {

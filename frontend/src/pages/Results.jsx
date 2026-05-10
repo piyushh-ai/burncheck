@@ -162,6 +162,30 @@ export default function Results() {
         </p>
       </header>
 
+      {/* Email Confirmation Banner */}
+      {!isShared && (
+        <div className="email-sent-banner" style={{
+          background: 'rgba(63, 185, 80, 0.1)',
+          border: '1px solid rgba(63, 185, 80, 0.3)',
+          color: 'var(--success)',
+          padding: '12px 20px',
+          borderRadius: '8px',
+          textAlign: 'center',
+          marginBottom: '32px',
+          fontSize: '14px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px'
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          A copy of this detailed report has been sent to <strong>{form.email}</strong>.
+        </div>
+      )}
+
       {/* Hero — Total Savings */}
       {totalMonthlySavings > 0 && (
         <section className="savings-hero">

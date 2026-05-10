@@ -1,12 +1,12 @@
 // src/services/llmService.js
-// Generates a 2-3 paragraph natural language audit summary using Claude.
+// Generates a 2-3 paragraph natural language audit summary using Mistral AI.
 // Called AFTER the rule engine produces recommendations — LLM only explains,
 // never invents pricing numbers.
 
-import Anthropic from "@anthropic-ai/sdk";
+import { Mistral } from "@mistralai/mistralai";
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
+const client = new Mistral({
+  apiKey: process.env.MISTRAL_API_KEY,
 });
 
 /**
@@ -53,29 +53,36 @@ Rules:
 }
 
 /**
- * Calls Anthropic API and returns a plain text summary string.
+ * Calls Mistral API and returns a plain text summary string.
  * Falls back gracefully if API call fails — never blocks the audit response.
  */
 export async function generateAuditSummary(userInput, recommendations) {
+  if (!process.env.MISTRAL_API_KEY) {
+    console.log("[llmService] MISTRAL_API_KEY not set — skipping LLM summary");
+    return null;
+  }
+
   try {
     const prompt = buildPrompt(userInput, recommendations);
 
-    const message = await client.messages.create({
-      model: "claude-haiku-4-5-20251001", // Fast + cheap — summary doesn't need Sonnet
-      max_tokens: 400,
+    const response = await client.chat.complete({
+      model: "mistral-small-latest", // Fast + cheap — good for summaries
       messages: [
         {
           role: "user",
           content: prompt,
         },
       ],
+      maxTokens: 400,
+      temperature: 0.4,
     });
 
-    const summary = message.content?.[0]?.text?.trim();
+    const summary = response.choices?.[0]?.message?.content?.trim();
+    console.log("[llmService] Mistral summary generated successfully");
     return summary || null;
   } catch (err) {
     // Don't fail the whole audit if LLM is down
-    console.error("[llmService] Anthropic API error:", err.message);
+    console.error("[llmService] Mistral API error:", err.message);
     return null;
   }
 }

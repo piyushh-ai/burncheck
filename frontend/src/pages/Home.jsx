@@ -15,7 +15,15 @@ const AI_TOOLS = [
 
 export default function Home() {
   const navigate = useNavigate();
-  const { form, status, error, draftSaved, updateField, toggleTool, submitAudit } = useAudit();
+  const {
+    form,
+    status,
+    error,
+    draftSaved,
+    updateField,
+    toggleTool,
+    submitAudit,
+  } = useAudit();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,19 +39,34 @@ export default function Home() {
   return (
     <div className="container home-page">
       <section className="hero">
-        <h1 className="headline">Find out exactly where you're burning money on AI</h1>
-        <p className="subtext">Free audit for startup teams. Takes 2 minutes.</p>
+        <h1 className="headline">
+          Find out exactly where you're burning money on AI
+        </h1>
+        <p className="subtext">
+          Free audit for startup teams. Takes 2 minutes.
+        </p>
       </section>
 
       <div className="card form-card">
         <div className="form-header">
           <h2>Audit Your Spend</h2>
-          {draftSaved && <span className="draft-badge"><span className="dot"></span> Draft saved</span>}
+          {draftSaved && (
+            <span className="draft-badge">
+              <span className="dot"></span> Draft saved
+            </span>
+          )}
         </div>
 
         {error && (
           <div className="error-banner">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="12" y1="8" x2="12" y2="12"></line>
               <line x1="12" y1="16" x2="12.01" y2="16"></line>
@@ -66,7 +89,9 @@ export default function Home() {
             {/* Column 1 */}
             <div className="form-col">
               <div className="form-group">
-                <label htmlFor="email">Work Email <span className="req">*</span></label>
+                <label htmlFor="email">
+                  Work Email <span className="req">*</span>
+                </label>
                 <input
                   type="email"
                   id="email"
@@ -157,7 +182,9 @@ export default function Home() {
                     className="toggle-input"
                   />
                   <span className="toggle-slider"></span>
-                  <span className="toggle-text">We need Developer API access</span>
+                  <span className="toggle-text">
+                    We need Developer API access
+                  </span>
                 </label>
               </div>
             </div>
@@ -180,12 +207,14 @@ export default function Home() {
           </div>
 
           <div className="form-actions">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="primary submit-btn"
               disabled={status === "loading"}
             >
-              {status === "loading" ? "Analyzing 25+ Plans..." : "Run My Free Audit →"}
+              {status === "loading"
+                ? "Analyzing 25+ Plans..."
+                : "Run My Free Audit →"}
             </button>
           </div>
         </form>
