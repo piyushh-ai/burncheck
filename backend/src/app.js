@@ -6,6 +6,9 @@ import auditRoutes from "./routes/auditRoutes.js";
 
 const app = express();
 
+// Trust reverse proxy (required for Render so rate-limiter can read X-Forwarded-For IPs correctly)
+app.set('trust proxy', 1);
+
 // ── CORS ──────────────────────────────────────────────────────────────────────
 const allowedOrigins = [
   "http://localhost:5173",
