@@ -1,4 +1,4 @@
-﻿# Unit Economics
+# Unit Economics
 
 ## Value of a Converted Lead
 
@@ -84,7 +84,3 @@ $1M ARR = $83,333/month revenue = ~167 active customers at $500/month average de
 **Biggest risk:** Getting from 1,000 to 15,000 monthly visitors organically. If SEO doesn't compound, we need paid acquisition, which changes the CAC math entirely.
 
 > _All numbers above are estimates. Credex actual deal size, margin, and retention are approximations based on publicly available B2B SaaS benchmarks._
-uditEngine.js for advanced tool overlap detection and budget savings calculations.
-- Integrated Anthropic LLM (claude-haiku) for natural language AI summaries.
-- Switched to express-validator for flexible, format-only email validation.
-- Wired frontend forms and backend endpoints, including local storage draft persistence and an Admin Leads dashboard.

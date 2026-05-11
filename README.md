@@ -13,8 +13,16 @@ Built as part of the Credex Web Dev Assignment 2026.
 
 ## Screenshots
 
-> Screenshots and a Loom walkthrough will be added after deployment.
-> TODO: Add 3+ screenshots of the audit form, results page, and shareable report.
+> The Loom walkthrough has been attached to the final assignment submission.
+
+### 1. The Audit Form
+![Audit Form](screenshots/AuditForm.png)
+
+### 2. The Savings Summary
+![Savings Summary](screenshots/ResultPage.png)
+
+### 3. Detailed Recommendations
+![Top Recommendations](screenshots/recommendation.png)
 
 ---
 

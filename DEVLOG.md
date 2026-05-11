@@ -125,11 +125,18 @@
 ---
 
 ## Day 5 — 2026-05-11
-**Hours worked:**
+**Hours worked:** 3
 **What I did:**
+- Finalized the project for the Credex submission.
+- Reviewed and cleaned up all 12 markdown documents (DEVLOG, ECONOMICS, ARCHITECTURE, etc.) to ensure they accurately reflect the final state of the application (e.g. Gmail SMTP, Mistral AI, Vercel/Render deployment).
+- Fixed a minor typo/accidental paste at the bottom of the ECONOMICS.md file.
+- Prepared the pitch and architecture summary for the technical interview.
 **What I learned:**
+- Full project documentation is highly valuable, not just for the submission but for personal clarity. Summarizing the trade-offs (e.g. Mongo vs Postgres, Rule Engine vs pure LLM) makes explaining the architecture in an interview much easier.
 **Blockers / what I'm stuck on:**
+- None. The app is fully deployed and ready.
 **Plan for tomorrow:**
+- Ace the Credex technical interview!
 
 ---
 
