@@ -19,10 +19,10 @@ Built as part of the Credex Web Dev Assignment 2026.
 ![Audit Form](screenshots/AuditForm.png)
 
 ### 2. The Savings Summary
-![Savings Summary](screenshots/ResultPage.png)
+![Savings Summary](screenshots/resultPage.png)
 
 ### 3. Detailed Recommendations
-![Top Recommendations](screenshots/recommendation.png)
+![Top Recommendations](screenshots/recommendations.png)
 
 ---
 
